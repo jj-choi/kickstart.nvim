@@ -99,8 +99,8 @@ require 'config.options'
 --  See `:help vim.keymap.set()`
 
 -- Custom Keymaps
-vim.keymap.set('n', '<C-d>', '<C-d>zz', { desc = 'up half page and center window to cursor' })
-vim.keymap.set('n', '<C-u>', '<C-u>zz', { desc = 'up half page and center window to cursor' })
+vim.keymap.set('n', '<C-u>', '<C-d>zz', { desc = 'down half page and center window to cursor' })
+vim.keymap.set('n', '<C-y>', '<C-u>zz', { desc = 'up half page and center window to cursor' })
 vim.keymap.set('x', '<leader>p', '"_dP', { desc = 'Paste without yanking selected text' })
 vim.keymap.set({ 'n', 'v' }, '<leader>y', '"+y', { desc = 'y to selection clipboard' })
 vim.keymap.set({ 'n' }, '<leader>yy', '"+yy', { desc = 'yy to system clipboard' })
@@ -142,10 +142,10 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
 -- TIP: Disable arrow keys in normal mode
-vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
-vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
-vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
-vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
+-- vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
+-- vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
+-- vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
+-- vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
 
 -- Keybinds to make split navigation easier.
 --  Use CTRL+<hjkl> to switch between windows
@@ -350,7 +350,8 @@ require('lazy').setup({
         --
         -- defaults = {
         --   mappings = {
-        --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
+        --     i = { ['<CR>'] = require('telescope.actions').select_default },
+        --     -- i = { ['<c-enter>'] = 'to_fuzzy_refine' },
         --   },
         -- },
         -- pickers = {}
