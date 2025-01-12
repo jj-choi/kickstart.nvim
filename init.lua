@@ -93,6 +93,14 @@ vim.g.maplocalleader = ' '
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = true
 
+-- File exploring forn nvim-tree
+-- disable netrw at the very start of your init.lua
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
+-- optionally enable 24-bit colour
+vim.opt.termguicolors = true
+
 require 'config.options'
 
 -- [[ Basic Keymaps ]]
@@ -114,13 +122,13 @@ vim.keymap.set('n', 'n', 'nzzzv', { desc = 'Keep search terms centered' })
 vim.keymap.set('n', 'N', 'Nzzzv', { desc = 'Keep search terms centered' })
 
 vim.keymap.set('n', '<leader>erc', ':e $MYVIMRC<ENTER>', { desc = 'Edit Runtime Config (init.lua)' })
-vim.keymap.set('n', '<leader>pv', ':Ex<Enter>', { desc = 'Explore directory' })
+vim.keymap.set('n', '<leader>tt', ':NvimTreeToggle<CR>', { desc = 'Toggle NvimTree' })
 
 vim.keymap.set('n', 'Q', '<nop>')
 vim.keymap.set('n', 's', '<nop>')
 
 vim.keymap.set('n', '<C-k>', '<cmd>cnext<CR>zz', { desc = 'Display next QuickFixList error' })
-vim.keymap.set('n', '<C-j>', '<cmd>cprev<CR>zz', { desc = 'Display next QuickFixList error' })
+vim.keymap.set('n', '<C-j>', '<cmd>cprev<CR>zz', { desc = 'Display next QuirkFixList error' })
 vim.keymap.set('n', '<leader>k', '<cmd>lnext<CR>zz', { desc = 'Display next LocationList error' })
 vim.keymap.set('n', '<leader>j', '<cmd>lprev<CR>zz', { desc = 'Display prev LocationList error' })
 
