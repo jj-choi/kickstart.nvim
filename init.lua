@@ -107,8 +107,8 @@ require 'config.options'
 --  See `:help vim.keymap.set()`
 
 -- Custom Keymaps
-vim.keymap.set('n', '<C-u>', '<C-d>zz', { desc = 'down half page and center window to cursor' })
-vim.keymap.set('n', '<C-y>', '<C-u>zz', { desc = 'up half page and center window to cursor' })
+vim.keymap.set('v', '<C-u>', '<C-d>zz', { desc = 'down half page and center window to cursor' })
+vim.keymap.set('v', '<C-y>', '<C-u>zz', { desc = 'up half page and center window to cursor' })
 vim.keymap.set('x', '<leader>p', '"_dP', { desc = 'Paste without yanking selected text' })
 vim.keymap.set({ 'n', 'v' }, '<leader>y', '"+y', { desc = 'y to selection clipboard' })
 vim.keymap.set({ 'n' }, '<leader>yy', '"+yy', { desc = 'yy to system clipboard' })
@@ -122,7 +122,6 @@ vim.keymap.set('n', 'n', 'nzzzv', { desc = 'Keep search terms centered' })
 vim.keymap.set('n', 'N', 'Nzzzv', { desc = 'Keep search terms centered' })
 
 vim.keymap.set('n', '<leader>erc', ':e $MYVIMRC<ENTER>', { desc = 'Edit Runtime Config (init.lua)' })
-vim.keymap.set('n', '<leader>tt', ':NvimTreeToggle<CR>', { desc = 'Toggle NvimTree' })
 
 vim.keymap.set('n', 'Q', '<nop>')
 vim.keymap.set('n', 's', '<nop>')
@@ -908,7 +907,7 @@ require('lazy').setup({
   --
   -- require 'kickstart.plugins.debug',
   -- require 'kickstart.plugins.indent_line',
-  -- require 'kickstart.plugins.lint',
+  require 'kickstart.plugins.lint',
   require 'kickstart.plugins.autopairs',
   -- require 'kickstart.plugins.neo-tree',
   -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps

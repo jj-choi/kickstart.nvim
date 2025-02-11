@@ -79,4 +79,4 @@ opt.cursorline = true
 opt.scrolloff = 10
 
 -- TODO: Figure out why tab isn't working
-opt.shiftwidth = 4
+opt.shiftwidth = 2
