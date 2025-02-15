@@ -91,73 +91,46 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
-vim.g.have_nerd_font = false
+vim.g.have_nerd_font = true
 
--- [[ Setting options ]]
--- See `:help vim.opt`
--- NOTE: You can change these options as you wish!
---  For more options, you can see `:help option-list`
+-- File exploring forn nvim-tree
+-- disable netrw at the very start of your init.lua
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
 
--- Make line numbers default
-vim.opt.number = true
--- You can also add relative line numbers, to help with jumping.
---  Experiment for yourself to see if you like it!
--- vim.opt.relativenumber = true
-
--- Enable mouse mode, can be useful for resizing splits for example!
-vim.opt.mouse = 'a'
-
--- Don't show the mode, since it's already in the status line
-vim.opt.showmode = false
-
--- Sync clipboard between OS and Neovim.
---  Schedule the setting after `UiEnter` because it can increase startup-time.
---  Remove this option if you want your OS clipboard to remain independent.
---  See `:help 'clipboard'`
-vim.schedule(function()
-  vim.opt.clipboard = 'unnamedplus'
-end)
-
--- Enable break indent
-vim.opt.breakindent = true
-
--- Save undo history
-vim.opt.undofile = true
-
--- Case-insensitive searching UNLESS \C or one or more capital letters in the search term
-vim.opt.ignorecase = true
-vim.opt.smartcase = true
-
--- Keep signcolumn on by default
-vim.opt.signcolumn = 'yes'
-
--- Decrease update time
-vim.opt.updatetime = 250
-
--- Decrease mapped sequence wait time
-vim.opt.timeoutlen = 300
-
--- Configure how new splits should be opened
-vim.opt.splitright = true
-vim.opt.splitbelow = true
-
--- Sets how neovim will display certain whitespace characters in the editor.
---  See `:help 'list'`
---  and `:help 'listchars'`
-vim.opt.list = true
-vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
-
--- Preview substitutions live, as you type!
-vim.opt.inccommand = 'split'
-
--- Show which line your cursor is on
-vim.opt.cursorline = true
-
--- Minimal number of screen lines to keep above and below the cursor.
-vim.opt.scrolloff = 10
+require 'config.options'
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
+
+-- Custom Keymaps
+vim.keymap.set('n', '<C-u>', '<C-d>zz', { desc = 'down half page and center window to cursor' })
+vim.keymap.set('n', '<C-y>', '<C-u>zz', { desc = 'up half page and center window to cursor' })
+vim.keymap.set('v', '<C-u>', '<C-d>zz', { desc = 'down half page and center window to cursor' })
+vim.keymap.set('v', '<C-y>', '<C-u>zz', { desc = 'up half page and center window to cursor' })
+vim.keymap.set('x', '<leader>p', '"_dP', { desc = 'Paste without yanking selected text' })
+vim.keymap.set({ 'n', 'v' }, '<leader>y', '"+y', { desc = 'y to selection clipboard' })
+vim.keymap.set({ 'n' }, '<leader>yy', '"+yy', { desc = 'yy to system clipboard' })
+
+vim.keymap.set('v', 'J', ":m '>+1<CR>gv=gv", { desc = 'Move line up' })
+vim.keymap.set('v', 'K', ":m '<-2<CR>gv=gv", { desc = 'Move line down' })
+
+vim.keymap.set('n', 'J', 'mzJ`z', { desc = 'Join lines with cursor same pos' })
+
+vim.keymap.set('n', 'n', 'nzzzv', { desc = 'Keep search terms centered' })
+vim.keymap.set('n', 'N', 'Nzzzv', { desc = 'Keep search terms centered' })
+
+vim.keymap.set('n', '<leader>erc', ':e $MYVIMRC<ENTER>', { desc = 'Edit Runtime Config (init.lua)' })
+
+vim.keymap.set('n', 'Q', '<nop>')
+vim.keymap.set('n', 's', '<nop>')
+
+vim.keymap.set('n', '<C-k>', '<cmd>cnext<CR>zz', { desc = 'Display next QuickFixList error' })
+vim.keymap.set('n', '<C-j>', '<cmd>cprev<CR>zz', { desc = 'Display next QuirkFixList error' })
+vim.keymap.set('n', '<leader>k', '<cmd>lnext<CR>zz', { desc = 'Display next LocationList error' })
+vim.keymap.set('n', '<leader>j', '<cmd>lprev<CR>zz', { desc = 'Display prev LocationList error' })
+
+vim.keymap.set('n', '<leader>rr', [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]]) -- rename in file
 
 -- Clear highlights on search when pressing <Esc> in normal mode
 --  See `:help hlsearch`
@@ -200,6 +173,17 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
   callback = function()
     vim.highlight.on_yank()
+  end,
+})
+
+-- Open help window in a vertical split to the right.
+vim.api.nvim_create_autocmd('BufWinEnter', {
+  group = vim.api.nvim_create_augroup('help_window_right', {}),
+  pattern = { '*.txt' },
+  callback = function()
+    if vim.o.filetype == 'help' then
+      vim.cmd.wincmd 'L'
+    end
   end,
 })
 
@@ -385,10 +369,23 @@ require('lazy').setup({
         --
         -- defaults = {
         --   mappings = {
-        --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
+        --     i = { ['<CR>'] = require('telescope.actions').select_default },
+        --     -- i = { ['<c-enter>'] = 'to_fuzzy_refine' },
         --   },
         -- },
-        -- pickers = {}
+        pickers = {
+          find_files = {
+            hidden = true,
+            find_command = {
+              'rg',
+              '--files',
+              '--glob',
+              '!{.git/*,node_modules/*}',
+              '--path-separator',
+              '/',
+            },
+          },
+        },
         extensions = {
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
@@ -511,49 +508,63 @@ require('lazy').setup({
             vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
           end
 
-          -- Jump to the definition of the word under your cursor.
-          --  This is where a variable was first declared, or where a function is defined, etc.
-          --  To jump back, press <C-t>.
-          map('gd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
+          local client = vim.lsp.get_client_by_id(event.data.client_id)
 
-          -- Find references for the word under your cursor.
-          map('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
+          -- omnisharp extended lsp
+          if client and client.name == 'omnisharp' then
+            -- Use omnisharp_extended for better navigation
+            map('gd', require('omnisharp_extended').lsp_definition, 'OmniSharp: Go to Definition')
+            map('<leader>D', require('omnisharp_extended').lsp_type_definition, 'OmniSharp: Type Definition')
+            map('gr', require('omnisharp_extended').lsp_references, 'OmniSharp: References')
+            map('gi', require('omnisharp_extended').lsp_implementation, 'OmniSharp: Implementation')
+          else
+            -- defaults
 
-          -- Jump to the implementation of the word under your cursor.
-          --  Useful when your language has ways of declaring types without an actual implementation.
-          map('gI', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
+            -- Jump to the definition of the word under your cursor.
+            --  This is where a variable was first declared, or where a function is defined, etc.
+            --  To jump back, press <C-t>.
+            map('gd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
 
-          -- Jump to the type of the word under your cursor.
-          --  Useful when you're not sure what type a variable is and you want to see
-          --  the definition of its *type*, not where it was *defined*.
-          map('<leader>D', require('telescope.builtin').lsp_type_definitions, 'Type [D]efinition')
+            -- Find references for the word under your cursor.
+            map('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
 
-          -- Fuzzy find all the symbols in your current document.
-          --  Symbols are things like variables, functions, types, etc.
-          map('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
+            -- Jump to the implementation of the word under your cursor.
+            --  Useful when your language has ways of declaring types without an actual implementation.
+            map('gI', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
 
-          -- Fuzzy find all the symbols in your current workspace.
-          --  Similar to document symbols, except searches over your entire project.
-          map('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
+            -- Jump to the type of the word under your cursor.
+            --  Useful when you're not sure what type a variable is and you want to see
+            --  the definition of its *type*, not where it was *defined*.
+            map('<leader>D', require('telescope.builtin').lsp_type_definitions, 'Type [D]efinition')
 
-          -- Rename the variable under your cursor.
-          --  Most Language Servers support renaming across files, etc.
-          map('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
+            -- Fuzzy find all the symbols in your current document.
+            --  Symbols are things like variables, functions, types, etc.
+            map('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
 
-          -- Execute a code action, usually your cursor needs to be on top of an error
-          -- or a suggestion from your LSP for this to activate.
-          map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction', { 'n', 'x' })
+            -- Fuzzy find all the symbols in your current workspace.
+            --  Similar to document symbols, except searches over your entire project.
+            map('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
 
-          -- WARN: This is not Goto Definition, this is Goto Declaration.
-          --  For example, in C this would take you to the header.
-          map('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
+            -- Rename the variable under your cursor.
+            --  Most Language Servers support renaming across files, etc.
+            map('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
+
+            -- Execute a code action, usually your cursor needs to be on top of an error
+            -- or a suggestion from your LSP for this to activate.
+            map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction', { 'n', 'x' })
+
+            -- WARN: This is not Goto Definition, this is Goto Declaration.
+            --  For example, in C this would take you to the header.
+            map('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
+          end
 
           -- The following two autocommands are used to highlight references of the
           -- word under your cursor when your cursor rests there for a little while.
           --    See `:help CursorHold` for information about when this is executed
           --
           -- When you move your cursor, the highlights will be cleared (the second autocommand).
-          local client = vim.lsp.get_client_by_id(event.data.client_id)
+
+          -- local client = vim.lsp.get_client_by_id(event.data.client_id)
           if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight) then
             local highlight_augroup = vim.api.nvim_create_augroup('kickstart-lsp-highlight', { clear = false })
             vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
@@ -642,6 +653,34 @@ require('lazy').setup({
               -- diagnostics = { disable = { 'missing-fields' } },
             },
           },
+        },
+
+        omnisharp = {
+          cmd = { '/home/jjchoi/.dotnet/dotnet', '/home/jjchoi/.local/share/nvim/mason/packages/omnisharp/libexec/OmniSharp.dll' },
+          capabilities = capabilities, -- Ensure it uses the updated capabilities from nvim-cmp
+          settings = {
+            FormattingOptions = {
+              EnableEditorConfigSupport = true,
+              OrganizeImports = nil,
+            },
+            MsBuild = {
+              LoadProjectsOnDemand = nil,
+            },
+            RoslynExtensionsOptions = {
+              EnableAnalyzersSupport = nil,
+              EnableImportCompletion = nil,
+              AnalyzeOpenDocumentsOnly = nil,
+            },
+            Sdk = {
+              IncludePrereleases = true,
+            },
+          },
+          -- keys = {
+          --   { 'gd', require('omnisharp_extended').lsp_definition, desc = 'OmniSharp: Go to Definition', mode = 'n' },
+          --   { '<leader>D', require('omnisharp_extended').lsp_type_definition, desc = 'OmniSharp: Type Definition', mode = 'n' },
+          --   { 'gr', require('omnisharp_extended').lsp_references, desc = 'OmniSharp: References', mode = 'n' },
+          --   { 'gi', require('omnisharp_extended').lsp_implementation, desc = 'OmniSharp: Implementation', mode = 'n' },
+          -- }
         },
       }
 
@@ -742,12 +781,12 @@ require('lazy').setup({
           -- `friendly-snippets` contains a variety of premade snippets.
           --    See the README about individual language/framework/plugin snippets:
           --    https://github.com/rafamadriz/friendly-snippets
-          -- {
-          --   'rafamadriz/friendly-snippets',
-          --   config = function()
-          --     require('luasnip.loaders.from_vscode').lazy_load()
-          --   end,
-          -- },
+          {
+            'rafamadriz/friendly-snippets',
+            config = function()
+              require('luasnip.loaders.from_vscode').lazy_load()
+            end,
+          },
         },
       },
       'saadparwaiz1/cmp_luasnip',
@@ -838,24 +877,6 @@ require('lazy').setup({
     end,
   },
 
-  { -- You can easily change to a different colorscheme.
-    -- Change the name of the colorscheme plugin below, and then
-    -- change the command in the config to whatever the name of that colorscheme is.
-    --
-    -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-    'folke/tokyonight.nvim',
-    priority = 1000, -- Make sure to load this before all the other start plugins.
-    init = function()
-      -- Load the colorscheme here.
-      -- Like many other themes, this one has different styles, and you could load
-      -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-night'
-
-      -- You can configure highlights by doing something like:
-      vim.cmd.hi 'Comment gui=none'
-    end,
-  },
-
   -- Highlight todo, notes, etc in comments
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
 
@@ -933,16 +954,14 @@ require('lazy').setup({
   --
   -- require 'kickstart.plugins.debug',
   -- require 'kickstart.plugins.indent_line',
-  -- require 'kickstart.plugins.lint',
-  -- require 'kickstart.plugins.autopairs',
+  require 'kickstart.plugins.lint',
+  require 'kickstart.plugins.autopairs',
   -- require 'kickstart.plugins.neo-tree',
   -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
-  --
-  --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
-  -- { import = 'custom.plugins' },
+  { import = 'custom.plugins' },
   --
   -- For additional information with loading, sourcing and examples see `:help lazy.nvim-🔌-plugin-spec`
   -- Or use telescope!
