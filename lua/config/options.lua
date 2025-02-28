@@ -81,5 +81,7 @@ opt.cursorline = true
 -- Minimal number of screen lines to keep above and below the cursor.
 opt.scrolloff = 10
 
--- TODO: Figure out why tab isn't working
-opt.shiftwidth = 2
+opt.shiftwidth = 4
+opt.tabstop = 4
+opt.softtabstop = 4
+-- opt.expandtab = true
