@@ -641,8 +641,8 @@ require('lazy').setup({
         --
 
         clangd = {
-          -- cmd = { '/home/jjchoi/.local/share/nvim/mason/bin/clangd', '--log=verbose' },
-          cmd = { 'clangd', '--compile-commands-dir=/home/jjchoi/Projects/hangul-rush/game/dictionary/programs' }, -- Path to compile_commands.json
+          cmd = { '/usr/bin/clangd' }, -- Use system-installed Clangd
+          -- cmd = { 'clangd', '--compile-commands-dir=/home/jjchoi/Projects/hangul-rush/game/dictionary/programs' }, -- Path to compile_commands.json
         },
 
         lua_ls = {
