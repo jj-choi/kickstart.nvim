@@ -640,6 +640,11 @@ require('lazy').setup({
         -- ts_ls = {},
         --
 
+        clangd = {
+          -- cmd = { '/home/jjchoi/.local/share/nvim/mason/bin/clangd', '--log=verbose' },
+          cmd = { 'clangd', '--compile-commands-dir=/home/jjchoi/Projects/hangul-rush/game/dictionary/programs' }, -- Path to compile_commands.json
+        },
+
         lua_ls = {
           -- cmd = { ... },
           -- filetypes = { ... },
@@ -760,6 +765,8 @@ require('lazy').setup({
         typescript = { 'prettierd', 'prettier', stop_after_first = true },
         javascriptreact = { 'prettierd', 'prettier', stop_after_first = true },
         typescriptreact = { 'prettierd', 'prettier', stop_after_first = true },
+
+        cpp = { 'clang-format' },
       },
     },
   },
