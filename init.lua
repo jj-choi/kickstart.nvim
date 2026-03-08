@@ -104,10 +104,10 @@ require 'config.options'
 --  See `:help vim.keymap.set()`
 
 -- Custom Keymaps
-vim.keymap.set('n', '<C-u>', '<C-d>zz', { desc = 'down half page and center window to cursor' })
-vim.keymap.set('n', '<C-y>', '<C-u>zz', { desc = 'up half page and center window to cursor' })
-vim.keymap.set('v', '<C-u>', '<C-d>zz', { desc = 'down half page and center window to cursor' })
-vim.keymap.set('v', '<C-y>', '<C-u>zz', { desc = 'up half page and center window to cursor' })
+vim.keymap.set('n', '<C-d>', '<C-d>zz', { desc = 'down half page and center window to cursor' })
+vim.keymap.set('n', '<C-u>', '<C-u>zz', { desc = 'up half page and center window to cursor' })
+vim.keymap.set('v', '<C-d>', '<C-d>zz', { desc = 'down half page and center window to cursor' })
+vim.keymap.set('v', '<C-u>', '<C-u>zz', { desc = 'up half page and center window to cursor' })
 vim.keymap.set('x', '<leader>p', '"_dP', { desc = 'Paste without yanking selected text' })
 vim.keymap.set({ 'n', 'v' }, '<leader>y', '"+y', { desc = 'y to selection clipboard' })
 vim.keymap.set({ 'n' }, '<leader>yy', '"+yy', { desc = 'yy to system clipboard' })
